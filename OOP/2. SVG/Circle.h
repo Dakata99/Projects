@@ -17,13 +17,15 @@ public:
 
 
     const std::string get_type(void) const override;
+    const std::string get_info(void) const override;
+
     double get_start_x(void) const override;
     double get_start_y(void) const override;
-    double getRadius(void) const;
+    double get_radius(void) const;
 
-    const std::string get_info(void) const override;
-    void print(void) const override;
     void translate(const double&, const double&) override;
+
+    void print(void) const override;
 };
 
 #endif

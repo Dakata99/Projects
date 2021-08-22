@@ -5,12 +5,6 @@ Line::Line(const double& start_x = 0.0, const double& start_y = 0.0,
            const std::string& col = "")
             : Figure(start_x, start_y, col), end_x(fabs(end_x_)), end_y(fabs(end_y_)), stroke_width(fabs(str_width)) {}
 
-double Line::get_end_x(void) const { return end_x; }
-
-double Line::get_end_y(void) const { return end_y; }
-
-double Line::get_stroke_width(void) const { return stroke_width; }
-
 const std::string Line::get_type(void) const { return "line"; }
 
 const std::string Line::get_info(void) const
@@ -29,10 +23,11 @@ double Line::get_start_x(void) const { return start_x; }
 
 double Line::get_start_y(void) const { return start_y; }
 
-void Line::print(void) const
-{
-    std::cout << "line " << start_x << " " << start_y << " " << end_x << " " << end_y << " " << stroke_width << " " << color << std::endl;
-}
+double Line::get_end_x(void) const { return end_x; }
+
+double Line::get_end_y(void) const { return end_y; }
+
+double Line::get_stroke_width(void) const { return stroke_width; }
 
 void Line::translate(const double& x = 0.0, const double& y = 0.0)
 {
@@ -40,4 +35,14 @@ void Line::translate(const double& x = 0.0, const double& y = 0.0)
     start_y += y;
     end_x += x;
     end_y += y;
+}
+
+void Line::print(void) const
+{
+    std::cout << "line " << start_x << " " 
+                         << start_y << " " 
+                         << end_x << " " 
+                         << end_y << " " 
+                         << stroke_width << " " 
+                         << color << std::endl;
 }

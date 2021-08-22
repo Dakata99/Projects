@@ -45,8 +45,8 @@ void Menu::saveas(const std::string& new_file, const Figures& obj)
 {
     if (file.is_open())
     {
-        std::fstream out(new_file, std::ofstream::out|std::ofstream::trunc);
-        
+        std::fstream out(new_file, std::ofstream::out | std::ofstream::trunc);
+
         out << "<svg>\n";
 
         for (size_t i = 0; i < obj.figures.size(); i++) out << obj.figures[i]->get_info();
@@ -78,8 +78,14 @@ void Menu::execute(const std::string& command, const std::string& argument, Figu
         else
             std::cout << "CLOSE CURRENT FILE FIRST!\n";
     }
-    else if (command == "save")     save(obj);
-    else if (command == "saveas")   saveas(argument, obj);
+    else if (command == "save")
+    {
+        save(obj);
+    }
+    else if (command == "saveas")
+    {
+        saveas(argument, obj);
+    }
     else if (command == "close")
     {
         obj.figures.clear();
@@ -97,11 +103,23 @@ void Menu::execute(const std::string& command, const std::string& argument, Figu
         create(argument, obj); //create a figure and add it to the vector of figures
         std::cout << "Successfully created " << argument.substr(0, argument.find(' ')) << " (" << obj.figures.size() << ")\n";
     }
-    else if (command == "erase")        erase(argument, obj);
-    else if (command == "translate")    translate(argument, obj);
-    else if (command == "within")       within(argument, obj);
-    else if (command == "exit")         std::cout << "Exiting the program...\n";
-    else                                std::cout << "Invalid command!\n";
+    else if (command == "erase")
+    {
+        erase(argument, obj);
+    }
+    else if (command == "translate")
+    {
+        translate(argument, obj);
+    }
+    else if (command == "within")
+    {
+        within(argument, obj);
+    }
+    else if (command == "exit")
+    {
+        std::cout << "Exiting the program...\n";
+    }
+    else std::cout << "Invalid command!\n";
 }
 
 void Menu::print_menu(void) const
@@ -123,45 +141,6 @@ void Menu::reset_file(void)
 {
     file.clear();
     file.seekg(0);
-}
-
-std::string Menu::extract_string(std::string source, std::string start, std::string end)
-{
-    size_t start_index = source.find(start);
-
-    if (start_index == std::string::npos) return source;
-    
-    start_index += start.length();
-    size_t end_index = source.find(end, start_index);
-
-    return source.substr(start_index, end_index - start_index);
-}
-
-std::string Menu::take_data(std::string& argument)
-{
-    std::string result;
-    if (argument.find('\"') != std::string::npos)
-    {
-        result = extract_string(argument, "\"", "\"");
-        argument.erase(0, argument.find(' ') + 1);
-    }
-    else 
-    {
-        result = argument.substr(0, argument.find(' '));
-        argument.erase(0, result.size() + 1);
-    }
-
-    return result;
-}
-
-bool Menu::valid_arg(const std::string& argument) // TODO
-{
-    if (argument.find(' ') != std::string::npos) //has space
-    {
-        std::string leftSide = argument.substr(0, argument.find(' ')), 
-                    rightSide = argument.substr(argument.find(' ') + 1, argument.size());
-    }
-    return false;
 }
 
 void Menu::init(Figures& obj)
@@ -210,10 +189,10 @@ void Menu::create_line(std::string& argument, Figures& obj)
                 y1 = take_data(argument), 
                 x2 = take_data(argument),
                 y2 = take_data(argument),
-                strokeWidth = take_data(argument),
+                stroke_width = take_data(argument),
                 color = take_data(argument);
 
-    obj.figures.push_back(obj.create_line(x1, y1, x2, y2, strokeWidth, color));
+    obj.figures.push_back(obj.create_line(x1, y1, x2, y2, stroke_width, color));
 }
 
 void Menu::print(const Figures& obj) { obj.print(); }

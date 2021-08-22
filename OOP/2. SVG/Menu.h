@@ -4,7 +4,9 @@
 #include <fstream>
 #include <string>
 #include <cmath>
+
 #include "Figures.h"
+#include "Tools.h"
 
 class Menu
 {
@@ -21,17 +23,10 @@ public:
     void saveas(const std::string&, const Figures&);
     void help(void) const;
     void execute(const std::string&, const std::string&, Figures&);
-    
     void print_menu(void) const;
-    //bool isOpen(void)const;
-    //void initName(const std::string);
     
 private:
     void reset_file(void);
-    std::string extract_string(std::string, std::string, std::string);
-    std::string take_data(std::string&);
-    bool valid_arg(const std::string&);
-
     void init(Figures&);
 
     void create_rectangle(std::string&, Figures&);
