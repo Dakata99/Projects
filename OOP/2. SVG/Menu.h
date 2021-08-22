@@ -1,4 +1,6 @@
-#pragma once
+#ifndef _MENU_H_
+#define _MENU_H_
+
 #include <fstream>
 #include <string>
 #include <cmath>
@@ -14,27 +16,27 @@ private:
 public:
     
     void open(const std::string&, Figures&);
-    void close();
+    void close(void);
     void save(const Figures&);
-    void saveas(const std::string, const Figures&);
-    void help()const;
+    void saveas(const std::string&, const Figures&);
+    void help(void) const;
     void execute(const std::string&, const std::string&, Figures&);
     
-    void printMenu()const;
-    //bool isOpen()const;
+    void print_menu(void) const;
+    //bool isOpen(void)const;
     //void initName(const std::string);
     
 private:
-    void resetFile();
-    std::string extractString(std::string, std::string, std::string);
-    std::string takeData(std::string&);
-    bool validArg(const std::string&);
+    void reset_file(void);
+    std::string extract_string(std::string, std::string, std::string);
+    std::string take_data(std::string&);
+    bool valid_arg(const std::string&);
 
     void init(Figures&);
 
-    void createRect(std::string&, Figures& obj);
-    void createCircle(std::string&, Figures& obj);
-    void createLine(std::string&, Figures&);
+    void create_rectangle(std::string&, Figures&);
+    void create_circle(std::string&, Figures&);
+    void create_line(std::string&, Figures&);
 
     void print(const Figures&);
     void create(const std::string&, Figures&);
@@ -42,3 +44,5 @@ private:
     void translate(const std::string&, Figures&);
     void within(const std::string&, Figures&);
 };
+
+#endif

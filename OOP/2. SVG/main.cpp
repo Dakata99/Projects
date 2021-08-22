@@ -1,17 +1,16 @@
-#include <iostream>
-#include "Menu.cpp"
-#include "Figure.cpp"
-#include "Figures.cpp"
-#include "Rectangle.cpp"
-#include "Circle.cpp"
-#include "Line.cpp"
+#include "Menu.h"
+#include "Figure.h"
+#include "Figures.h"
+#include "Rectangle.h"
+#include "Circle.h"
+#include "Line.h"
 
-void run()
+void run(void)
 {
-    Menu m;
-    m.printMenu();
+    Menu menu;
+    menu.print_menu();
 
-    Figures figures; //object of figures
+    Figures figures; // object of figures
     
     std::string operation;
     bool initialized = false;
@@ -25,12 +24,12 @@ void run()
         if (operation.find(' ') != std::string::npos)
             argument = operation.substr(operation.find(' ') + 1, operation.size());
         
-        m.execute(command, argument, figures);
+        menu.execute(command, argument, figures);
 
     } while (operation != "exit");
 }
 
-int main()
+int main(void)
 {
     run();
     

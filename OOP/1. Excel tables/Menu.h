@@ -1,30 +1,41 @@
-#pragma once
+#ifndef _MENU_H_
+#define _MENU_H_
+
+#include <iostream>
 #include <fstream>
 
-class Table;
+#include "Table.h"
 
 class Menu
 {
 private:
     friend Table;
     std::fstream file;
-    std::string name;
+    std::string file_name;
 
-private:
-    void open(const std::string);
-    void close(const std::string);
-    void save();
-    void save_as(const std::string);
-    void help()const;
-    void exit();
+    bool printable, editable;
 
-private:
-    std::string removeWhiteSpaces(const std::string);
-    std::string change(const std::string);
-    void simplify();
+    void open(const std::string&);
+    void close(void);
+    void save(void);
+    void save_as(const std::string&);
+    void help(void) const;
+
+    void print(Table&) const;
+    void edit(Table&);
+
+    std::string change(const std::string&);
+    void simplify(void);
+
+    void read(Table&);
+    void init(Table&);
 
 public:
-    bool execute(const std::string, const std::string);
-    void printMenu()const;
-    bool opened()const;
+    Menu();
+    
+    void execute(const std::string&, const std::string&, Table&);
+    void print_menu(void) const;
+    bool opened(void) const;
 };
+
+#endif

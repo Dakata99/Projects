@@ -1,4 +1,4 @@
-std::vector<double> convertData(std::string source)
+std::vector<double> convert_data(std::string source)
 {
     if (source[0] == ' ')
     {
@@ -12,7 +12,7 @@ std::vector<double> convertData(std::string source)
     std::vector<double> vec;
     while (source != "")
     {
-        std::string temp = extractString(source, ' ');
+        std::string temp = extract_string(source, ' ');
         source = source.erase(0, temp.size() + 1);
         
         double number = std::stod(temp);

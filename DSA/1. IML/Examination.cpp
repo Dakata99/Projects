@@ -1,96 +1,35 @@
-bool isInteger(const std::string arg)
+#include "../../../c++/library/Strlib.h"
+
+bool check_argument(const std::string openTag)
 {
-    for (size_t i = 0; i < arg.size(); i++)
-        if (!(arg[i] >= '0' && arg[i] <= '9'))
-            return false;
-        
-    return true;
-}
-bool isNumber(const std::string arg)
-{
-    size_t counter = 0;
-    for (size_t i = 0; i < arg.size(); i++)
-        if (arg[i] == '.')
-            counter++;
+    std::string argument = extract_string(openTag, '\"', '\"');
 
-    if (arg[0] == '.' || arg[arg.size() - 1] == '.' || counter > 1)
-        return false;
-
-    if (counter == 1)
-        if (arg[0] == '-')
-            return isInteger(arg.substr(1, arg.find('.'))) && isInteger(arg.substr(arg.find('.') + 1, arg.size()));
-        else
-            return isInteger(arg.substr(0, arg.find('.'))) && isInteger(arg.substr(arg.find('.') + 1, arg.size()));
-
-    if(arg[0] == '-')
-        return isInteger(arg.substr(1, arg.size()));
-
-    return isInteger(arg);
-}
-bool checkArgument(const std::string openTag)
-{
-    std::string argument = extractString(openTag, '\"', '\"');
-    if (argument == "ASC" || argument == "DSC" || isNumber(argument))
-        return true;
+    if (argument == "ASC" || argument == "DSC" || is_number(argument)) return true;
 
     return false;
 }
-std::string opposite(const std::string openTag)
+
+std::string opposite(const std::string& open_tag)
 {
-    if (openTag == "<MAP-INC")
-    {
-        return "</MAP-INC>";
-    }
-    else if (openTag == "<MAP-MLT")
-    {
-        return "</MAP-MLT>";
-    }
-    else if (openTag == "<AGG-SUM>")
-    {
-        return "</AGG-SUM>";
-    }
-    else if (openTag == "<AGG-PRO>")
-    {
-        return "</AGG-PRO>";
-    }
-    else if (openTag == "<AGG-AVG>")
-    {
-        return "</AGG-AVG>";
-    }
-    else if (openTag == "<AGG-FST>")
-    {
-        return "</AGG-FST>";
-    }
-    else if (openTag == "<AGG-LST>")
-    {
-        return "</AGG-LST>";
-    }
-    else if (openTag == "<SRT-REV>")
-    {
-        return "</SRT-REV>";
-    }
-    else if (openTag == "<STR-ORD \"ASC\">")
-    {
-        return "</SRT-ORD>";
-    }
-    else if (openTag == "<STR-ORD \"DSC\">")
-    {
-        return "</SRT-ORD>";
-    }
-    else if (openTag == "<STR-SLC")
-    {
-        return "</SRT-SLC>";
-    }
-    else if (openTag == "<STR-DST>")
-    {
-        return "</SRT-DST>";
-    }
+    if (open_tag == "<MAP-INC") return "</MAP-INC>";
+    else if (open_tag == "<MAP-MLT") return "</MAP-MLT>";
+    else if (open_tag == "<AGG-SUM>") return "</AGG-SUM>";
+    else if (open_tag == "<AGG-PRO>") return "</AGG-PRO>";
+    else if (open_tag == "<AGG-AVG>") return "</AGG-AVG>";
+    else if (open_tag == "<AGG-FST>") return "</AGG-FST>";
+    else if (open_tag == "<AGG-LST>") return "</AGG-LST>";
+    else if (open_tag == "<SRT-REV>") return "</SRT-REV>";
+    else if (open_tag == "<STR-ORD \"ASC\">") return "</SRT-ORD>";
+    else if (open_tag == "<STR-ORD \"DSC\">") return "</SRT-ORD>";
+    else if (open_tag == "<STR-SLC") return "</SRT-SLC>";
+    else if (open_tag == "<STR-DST>") return "</SRT-DST>";
 
     return "Invalid tag!\n";
 }
-bool checkTag(const std::string tag)
+
+bool check_tag(const std::string tag)
 {
-    if ((tag.substr(0, tag.find(' ')) == "<MAP-INC" && checkArgument(tag)) || (tag.substr(0, tag.find(' ')) == "<MAP-MLT" && checkArgument(tag)))
+    if ((tag.substr(0, tag.find(' ')) == "<MAP-INC" && check_argument(tag)) || (tag.substr(0, tag.find(' ')) == "<MAP-MLT" && check_argument(tag)))
     {
         return true;
     }
@@ -98,7 +37,7 @@ bool checkTag(const std::string tag)
     {
         return true;
     }
-    else if (tag == "<SRT-REV>" || tag == "<SRT-ORD \"ASC\">" || tag == "<SRT-ORD \"DSC\">" || (tag.substr(0, tag.find(' ')) == "<SRT-SLC" && checkArgument(tag)) || tag == "<SRT-DST>")
+    else if (tag == "<SRT-REV>" || tag == "<SRT-ORD \"ASC\">" || tag == "<SRT-ORD \"DSC\">" || (tag.substr(0, tag.find(' ')) == "<SRT-SLC" && check_argument(tag)) || tag == "<SRT-DST>")
     {
         return true;
     }
@@ -124,7 +63,7 @@ bool examine(std::stack<std::string> tags)
     bool flag = true;
     while (!tags.empty())
     {
-        if (!checkTag(tags.top()))
+        if (!check_tag(tags.top()))
         {    
             std::cout << index++ << ". Invalid tag - " << tags.top() << std::endl; 
             flag = false;

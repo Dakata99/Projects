@@ -1,24 +1,20 @@
 
 
-bool member(const std::vector<double> vec, const double number)
+bool member(const std::vector<double>& vec, const double number)
 {
     for (size_t i = 0; i < vec.size(); i++)
-    {
-        if (vec[i] == number)
-        {
-            return true;
-        }
-    }
+        if (vec[i] == number) return true;
+
     return false;
 }
 
-void toString(const double result, std::string& data)
+void to_string(const double result, std::string& data)
 {
     std::stringstream s;
     s << result << " ";
     data = s.str();
 }
-void vectorToString(const std::vector<double> vec, std::string& data)
+void vector_to_string(const std::vector<double>& vec, std::string& data)
 {
     std::stringstream s;
     for (size_t i = 0; i < vec.size(); i++)
@@ -27,36 +23,33 @@ void vectorToString(const std::vector<double> vec, std::string& data)
     data = s.str();
 }
 
-double AGG_SUM(const std::vector<double> vec)
+double AGG_SUM(const std::vector<double>& vec)
 {
     double result = 0;
-    for (size_t i = 0; i < vec.size(); i++)
-    {
-        result += vec[i];
-    }
+
+    for (size_t i = 0; i < vec.size(); i++) result += vec[i];
+
     return result;
 }
-double AGG_PRO(const std::vector<double> vec)
+
+double AGG_PRO(const std::vector<double>& vec)
 {
     double result = 1;
-    for (size_t i = 0; i < vec.size(); i++)
-    {
-        result *= vec[i];
-    }
+
+    for (size_t i = 0; i < vec.size(); i++) result *= vec[i];
+
     return result;
 }
-double AGG_AVG(const std::vector<double> vec)
+
+double AGG_AVG(const std::vector<double>& vec) { return AGG_SUM(vec) / vec.size(); }
+
+std::vector<double> MAP_INC(const double& inc, std::vector<double>& vec)
 {
-    return AGG_SUM(vec) / vec.size();
-}
-std::vector<double> MAP_INC(const double inc, std::vector<double> vec)
-{
-    for (size_t i = 0; i < vec.size(); i++)
-    {
-        vec[i] += inc;
-    }
+    for (size_t i = 0; i < vec.size(); i++) vec[i] += inc;
+
     return vec;
 }
+
 std::vector<double> MAP_MLT(const double mul, std::vector<double> vec)
 {
     for (size_t i = 0; i < vec.size(); i++)
@@ -65,6 +58,7 @@ std::vector<double> MAP_MLT(const double mul, std::vector<double> vec)
     }
     return vec;
 }
+
 std::vector<double> SRT_REV(std::vector<double> vec)
 {
     std::vector<double> temp;
@@ -74,7 +68,8 @@ std::vector<double> SRT_REV(std::vector<double> vec)
     }
     return temp;
 }
-std::vector<double> SRT_ASC(const std::vector<double> vec)
+
+std::vector<double> SRT_ASC(const std::vector<double>& vec)
 {
     std::vector<double> temp = vec;
 
@@ -85,7 +80,8 @@ std::vector<double> SRT_ASC(const std::vector<double> vec)
 
     return temp;
 }
-std::vector<double> SRT_DSC(const std::vector<double> vec)
+
+std::vector<double> SRT_DSC(const std::vector<double>& vec)
 {
     std::vector<double> temp = vec;
 
@@ -96,7 +92,8 @@ std::vector<double> SRT_DSC(const std::vector<double> vec)
 
     return temp;
 }
-std::vector<double> SRT_SLC(const std::vector<double> vec, const size_t index)
+
+std::vector<double> SRT_SLC(const std::vector<double>& vec, const size_t index)
 {
     std::vector<double> temp;
     for (size_t i = 0; i < vec.size(); i++)
@@ -105,7 +102,8 @@ std::vector<double> SRT_SLC(const std::vector<double> vec, const size_t index)
 
     return temp;
 }
-std::vector<double> SRT_DST(const std::vector<double> vec)
+
+std::vector<double> SRT_DST(const std::vector<double>& vec)
 {
     std::vector<double> temp;
     for (size_t i = 0; i < vec.size(); i++)
@@ -117,71 +115,72 @@ std::vector<double> SRT_DST(const std::vector<double> vec)
     }
     return temp;
 }
-void execute(const std::string function, std::vector<double> realData, std::string& data)
+
+void execute(const std::string function, std::vector<double> real_data, std::string& data)
 {
     if (function == "<AGG-SUM>")
     {
-        double result = AGG_SUM(realData);
-        toString(result, data);
+        double result = AGG_SUM(real_data);
+        to_string(result, data);
     }
     else if (function == "<AGG-PRO>")
     {
-        double result = AGG_PRO(realData);
-        toString(result, data);
+        double result = AGG_PRO(real_data);
+        to_string(result, data);
     }
     else if (function == "<AGG-AVG>")
     {
-        double result = AGG_AVG(realData);
-        toString(result, data);
+        double result = AGG_AVG(real_data);
+        to_string(result, data);
     }
     else if (function == "<AGG-FST>")
     {
-        double result = realData[0];
-        toString(result, data);
+        double result = real_data[0];
+        to_string(result, data);
     }
     else if (function == "<AGG-LST>")
     {
-        double result = realData[realData.size() - 1];
-        toString(result, data);
+        double result = real_data[real_data.size() - 1];
+        to_string(result, data);
     }
     else if (function.substr(0, function.find(' ')) == "<MAP-INC")
     {
-        double inc = std::stod(extractString(function, '\"', '\"'));
-        std::vector<double> temp = MAP_INC(inc, realData);
+        double inc = std::stod(extract_string(function, '\"', '\"'));
+        std::vector<double> temp = MAP_INC(inc, real_data);
         
-        vectorToString(temp, data);
+        vector_to_string(temp, data);
     }
     else if (function.substr(0, function.find(' ')) == "<MAP-MLT")
     {
-        double mul = std::stod(extractString(function, '\"', '\"'));
-        std::vector<double> temp = MAP_MLT(mul, realData);
+        double mul = std::stod(extract_string(function, '\"', '\"'));
+        std::vector<double> temp = MAP_MLT(mul, real_data);
         
-        vectorToString(temp, data);
+        vector_to_string(temp, data);
     }
     else if (function == "<SRT-REV>")
     {
-        std::vector<double> temp = SRT_REV(realData);
-        vectorToString(temp, data);
+        std::vector<double> temp = SRT_REV(real_data);
+        vector_to_string(temp, data);
     }
     else if (function == "<SRT-ORD \"ASC\">")
     {
-        std::vector<double> temp = SRT_ASC(realData);
-        vectorToString(temp, data);
+        std::vector<double> temp = SRT_ASC(real_data);
+        vector_to_string(temp, data);
     }
     else if (function == "<SRT-ORD \"DSC\">")
     {
-        std::vector<double> temp = SRT_DSC(realData);
-        vectorToString(temp, data);
+        std::vector<double> temp = SRT_DSC(real_data);
+        vector_to_string(temp, data);
     }
     else if (function.substr(0, function.find(' ')) == "<SRT-SLC")
     {
-        size_t index = std::stoi(extractString(function, '\"', '\"'));
-        std::vector<double> temp = SRT_SLC(realData, index);
-        vectorToString(temp, data);
+        size_t index = std::stoi(extract_string(function, '\"', '\"'));
+        std::vector<double> temp = SRT_SLC(real_data, index);
+        vector_to_string(temp, data);
     }
     else if (function == "<SRT-DST>")
     {
-        std::vector<double> temp = SRT_DST(realData);
-        vectorToString(temp, data);
+        std::vector<double> temp = SRT_DST(real_data);
+        vector_to_string(temp, data);
     }
 }

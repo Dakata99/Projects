@@ -1,122 +1,30 @@
 #include <vector>
 #include <cmath>
 #include <sstream>
+
+#include "Tools.h"
 #include "Table.h"
 
-Cell::Cell():data(""){}
-
-void Table::setRows(Menu& m)
-{
-    size_t lines = 0;
-    std::string line;
-    while (std::getline(m.file, line))
-    {
-        lines++;
-    }
-    rows = lines;
-}
-void Table::setColumns(Menu& m)
-{
-    m.file.clear();
-    m.file.seekg(0);
-
-    std::string line;
-    size_t cols = 0;
-    while (std::getline(m.file, line))
-    {
-        size_t counter = 0;
-        for (size_t i = 0; i < line.size(); i++)
-        {
-            if (line[i] == ',')
-            {
-                counter++;
-            }
-        }
-        if (cols <= counter)
-        {
-            cols = counter;
-        }
-    }
-    columns = cols + 1;
-}
-size_t Table::setWidth(size_t index)const
+size_t Table::set_width(const size_t& index) const
 {
     size_t max = 0;
-    for (size_t i = 0; i < rows; i++)
+    for (size_t i = 0; i < table.size(); i++)
     {
-        if (max <= cells[i][index].data.size())
-        {
-            max = cells[i][index].data.size();
-        }
+        size_t len = table[i][index].size();
+        if (max <= len) max = len;
     }
     
     return max;
 }
 
-std::string Table::extractString(std::string source, const char end)
-{
-    // size_t startIndex = source.find(end); 
-    // if (startIndex == std::string::npos)
-    // {
-    //     return source;
-    // }
-
-    // size_t endIndex = source.find(end, startIndex + 1);
-    // std::string temp = source.substr(0, source.find(end));
-    // return source.substr(startIndex, endIndex - startIndex);
-
-    size_t startIndex = source.find(end), endIndex = source.find(end, startIndex + 1);
-    return source.substr(0, source.find(end));
-}
-std::string Table::extractString(std::string source, std::string start, std::string end)
-{
-    size_t startIndex = source.find(start);
-    if (startIndex == std::string::npos)
-    {
-        return source;
-    }
-    startIndex += start.length();
-
-    size_t endIndex = source.find(end, startIndex);
-
-    return source.substr(startIndex, endIndex - startIndex);
-}
-// std::string Table::removeWhiteSpaces(Menu& m)
-// {
-//     m.file.clear();
-//     m.file.seekg(0);
-//     std::string temp;
-//     char symbol;
-//     while (m.file >> std::noskipws >> symbol)
-//     {
-//         if (symbol != ' ')
-//         {
-//             temp += symbol;
-//         }
-//     }
-//     return temp;
-// }
-std::string Table::removeWS(const std::string source)
-{
-    std::string temp;
-    for (size_t i = 0; i < source.size(); i++)
-    {
-        if (source[i] != ' ')
-        {
-            temp += source[i];
-        }
-    }
-    return temp;
-}
-
 void Table::read(Menu& m)
 {
-    m.file.clear();
-    m.file.seekg(0);
+    //m.file.clear();
+    //m.file.seekg(0);
     
     std::vector<std::string> vec;
     std::string line;
-    while (std::getline(m.file, line))
+    //while (std::getline(m.file, line))
     {
         //simplifying by removing all white spaces
         std::string temp = removeWS(line);
@@ -129,15 +37,15 @@ void Table::read(Menu& m)
     {
         while (vec[i] != "")
         {
-            vec2.push_back(extractString(vec[i], ','));
-            vec[i] = vec[i].erase(0, extractString(vec[i], ',').size() + 1);
+            vec2.push_back(extract_string(vec[i], ','));
+            vec[i] = vec[i].erase(0, extract_string(vec[i], ',').size() + 1);
         }
         vec2.push_back("\n");
     }
     
     std::vector<std::string> temp;
     for (size_t i = 0; i < vec2.size(); i++)
-        temp.push_back(extractString(vec2[i], "\"", "\""));
+        temp.push_back(extract_string(vec2[i], "\"", "\""));
 
     // for (size_t i = 0; i < temp.size(); i++)
     // {
@@ -162,7 +70,7 @@ void Table::read(Menu& m)
         }
         else
         {
-            cells[i][j].data = vec2[k];
+            table[i][j] = vec2[k];
             j++;
         }
     }
@@ -171,107 +79,22 @@ void Table::read(Menu& m)
     // {
     //     for (size_t j = 0; j < columns; j++)
     //     {
-    //         std::cout << cells[i][j].data << " ";
+    //         std::cout << table[i][j] << " ";
     //     }
     //     std::cout << std::endl;
     // }
 }
 
-bool Table::isInteger(const std::string digit)const
-{
-    if (digit == "")
-        return false;
-    
-    size_t i = 0;
+bool Table::valid_cell(const size_t& row, const size_t& column)
+{ return true; } //return row >= 1 && row <= rows && column >= 1 && column <= columns; }
 
-    if (digit[0] == '-')
-        i = 1;
+size_t Table::get_row(const std::string source) const { return std::stoi(source.substr(1, source.find('C'))); }
 
-    
-    for (; i < digit.size(); i++)
-        if (!(digit[i] >= '0' && digit[i] <= '9'))
-            return false;
-
-    return true;
-}
-bool Table::isDouble(std::string source)const
-{
-    if (source == "")
-        return false;
-    
-    size_t counter = 0;
-    for (size_t i = 0; i < source.size(); i++)
-        if (source[i] == '.')
-            counter++;
-
-
-    if (counter > 1 || source[0] == '.' || source[source.size() - 1] == '.')
-        return false;
-
-    
-    if (counter == 1)
-    {
-        if (source[0] == '-')
-            return isInteger(source.substr(1, source.find('.') - 1)) && isInteger(source.substr(source.find('.') + 1, source.size()));
-
-        else
-            return isInteger(source.substr(0, source.find('.'))) && isInteger(source.substr(source.find('.') + 1, source.size()));
-    }
-    
-    return isInteger(source);
-}
-bool Table::isCell(const std::string operand)const
-{
-    if (operand[0] != 'R' || operand[1] == 'C' || operand[operand.size()] == 'C' || operand.find('C') == std::string::npos)
-    {
-        return false;
-    }
-    else if (!isInteger(operand.substr(1, operand.find('C') - 1)))
-    {
-        return false;
-    }
-    else if (!isInteger(operand.substr(operand.find('C') + 1, operand.size())))
-    {
-        return false;
-    }
-
-    return true;
-}
-bool Table::validCell(const size_t row, const size_t column)const
-{
-    return row >= 1 && row <= rows && column >= 1 && column <= columns;
-}
-
-std::string Table::check(std::string source)const
-{
-    if (isCell(source))
-    {
-        return "cell";
-    }
-    else if (isDouble(source))
-    {
-        return "number";
-    }
-    else 
-    {
-        return "string";
-    }
-    
-    return "";
-}
-
-size_t Table::getRow(const std::string source)const
-{
-    return std::stoi(source.substr(1, source.find('C')));
-}
-size_t Table::getColumn(const std::string source)const
-{
-    return std::stoi(source.substr(source.find('C') + 1, source.size()));
-}
+size_t Table::get_column(const std::string source) const { return std::stoi(source.substr(source.find('C') + 1, source.size())); }
 
 void Table::execute(const std::string lhs, const std::string rhs)
 {
-    size_t row = getRow(lhs), column = getColumn(lhs);
+    size_t row = get_row(lhs), column = get_column(lhs);
     if (!(row >= 1 && row <= rows && column >= 1 && column <= columns))
     {
         std::cout << "No such cell(" << lhs << ") in table!\n";
@@ -282,28 +105,29 @@ void Table::execute(const std::string lhs, const std::string rhs)
     std::string type = check(rhs);
     if (type == "cell")
     {
-        size_t rhsRow = getRow(rhs), rhsColumn = getColumn(rhs);
+        size_t rhsRow = get_row(rhs), rhsColumn = get_column(rhs);
 
         if (rhsRow >= 1 && rhsRow <= rows && rhsColumn >= 1 && rhsColumn <= columns)
-            cells[row - 1][column - 1].data = cells[rhsRow - 1][rhsColumn - 1].data;
+            table[row - 1][column - 1] = table[rhsRow - 1][rhsColumn - 1];
         else 
-            cells[row - 1][column - 1].data = "0";
+            table[row - 1][column - 1] = "0";
     }
     else if (type == "number")
     {
             double number = std::stod(rhs);
             std::stringstream s;
             s << number;
-            cells[row - 1][column - 1].data = s.str();
+            table[row - 1][column - 1] = s.str();
     }
     else if (type == "string")
     {
-        cells[row - 1][column - 1].data = rhs;
+        table[row - 1][column - 1] = rhs;
     }
 }
+
 void Table::execute(const std::string cell, const std::string larg, const char oper, const std::string rarg)
 {
-    size_t row =  getRow(cell), column = getColumn(cell);
+    size_t row =  get_row(cell), column = get_column(cell);
     if (!(row >= 1 && row <= rows && column >= 1 && column <= columns))
     {
         std::cout << "No such cell(" << cell << ") in this table\n";
@@ -319,66 +143,66 @@ void Table::execute(const std::string cell, const std::string larg, const char o
     }
     else if (type1 == "cell" && type2 == "number")
     {
-        size_t largRow = getRow(larg), largColumn = getColumn(larg);
+        size_t largRow = get_row(larg), largColumn = get_column(larg);
                 
-        type1 = check(cells[largRow - 1][largColumn - 1].data);
+        type1 = check(table[largRow - 1][largColumn - 1]);
         if (type1 == "number")
         {
-            double num1 = std::stod(cells[largRow - 1][largColumn - 1].data);
+            double num1 = std::stod(table[largRow - 1][largColumn - 1]);
             double num2 = std::stod(rarg);
 
             std::stringstream s;
             switch (oper)
             {
-                case '+': s << num1 + num2; cells[row - 1][column - 1].data = s.str(); break;
-                case '-': s << num1 - num2; cells[row - 1][column - 1].data = s.str(); break;
-                case '*': s << num1 * num2; cells[row - 1][column - 1].data = s.str(); break;
+                case '+': s << num1 + num2; table[row - 1][column - 1] = s.str(); break;
+                case '-': s << num1 - num2; table[row - 1][column - 1] = s.str(); break;
+                case '*': s << num1 * num2; table[row - 1][column - 1] = s.str(); break;
                 case '/': 
                     if (num2 == 0)
                     {
-                        cells[row - 1][column - 1].data = "ERROR";
+                        table[row - 1][column - 1] = "ERROR";
                     }
                     else
                     {
                         s << num1 / num2; 
-                        cells[row - 1][column - 1].data = s.str();
+                        table[row - 1][column - 1] = s.str();
                     }break;
-                case '^': s << pow(num1, num2); cells[row - 1][column - 1].data = s.str(); break;
+                case '^': s << pow(num1, num2); table[row - 1][column - 1] = s.str(); break;
             }
         }
         else
         {
-            cells[row - 1][column - 1].data = "0";
+            table[row - 1][column - 1] = "0";
         }
     }
     else if (type1 == "number" && type2 == "cell")
     {
-        size_t rargRow = getRow(rarg), rargColumn = getColumn(rarg);
+        size_t rargRow = get_row(rarg), rargColumn = get_column(rarg);
 
-        type2 = check(cells[rargRow - 1][rargColumn - 1].data);
+        type2 = check(table[rargRow - 1][rargColumn - 1]);
         if (type2 == "number")
         {
             double num1 = std::stod(larg);
-            double num2 = std::stod(cells[rargRow - 1][rargColumn - 1].data);
+            double num2 = std::stod(table[rargRow - 1][rargColumn - 1]);
 
             std::stringstream s;
             switch (oper)
             {
-                case '+': s << num1 + num2; cells[row - 1][column - 1].data = s.str(); break;
-                case '-': s << num1 - num2; cells[row - 1][column - 1].data = s.str(); break;
-                case '*': s << num1 * num2; cells[row - 1][column - 1].data = s.str(); break;
+                case '+': s << num1 + num2; table[row - 1][column - 1] = s.str(); break;
+                case '-': s << num1 - num2; table[row - 1][column - 1] = s.str(); break;
+                case '*': s << num1 * num2; table[row - 1][column - 1] = s.str(); break;
                 case '/': 
                     if (num2 == 0)
                     {
-                        cells[row - 1][column - 1].data = "ERROR";
+                        table[row - 1][column - 1] = "ERROR";
                     }
                     else
                     {
                         s << num1 / num2; 
-                        cells[row - 1][column - 1].data = s.str();
+                        table[row - 1][column - 1] = s.str();
                     } 
                     break;
-                case '^': s << pow(num1, num2); cells[row - 1][column - 1].data = s.str(); break;
+                case '^': s << pow(num1, num2); table[row - 1][column - 1] = s.str(); break;
             }
         }
         else
@@ -387,11 +211,11 @@ void Table::execute(const std::string cell, const std::string larg, const char o
             {
                 std::stringstream s;
                 s << pow(std::stod(larg), 0);
-                cells[row - 1][column - 1].data = s.str();
+                table[row - 1][column - 1] = s.str();
             }
             else
             {
-                cells[row - 1][column - 1].data = "ERROR";
+                table[row - 1][column - 1] = "ERROR";
             }
         }
     }
@@ -402,146 +226,124 @@ void Table::execute(const std::string cell, const std::string larg, const char o
         std::stringstream s;
         switch (oper)
         {
-            case '+': s << num1 + num2; cells[row - 1][column - 1].data = s.str(); break;
-            case '-': s << num1 - num2; cells[row - 1][column - 1].data = s.str(); break;
-            case '*': s << num1 * num2; cells[row - 1][column - 1].data = s.str(); break;
+            case '+': s << num1 + num2; table[row - 1][column - 1] = s.str(); break;
+            case '-': s << num1 - num2; table[row - 1][column - 1] = s.str(); break;
+            case '*': s << num1 * num2; table[row - 1][column - 1] = s.str(); break;
             case '/': 
                 if (num2 == 0)
                 {
-                    cells[row - 1][column - 1].data = "ERROR";
+                    table[row - 1][column - 1] = "ERROR";
                 }
                 else
                 {
                     s << num1 / num2;
-                    cells[row - 1][column - 1].data = s.str();
+                    table[row - 1][column - 1] = s.str();
                 }   
                 break;
-            case '^': s << pow(num1, num2); cells[row - 1][column - 1].data = s.str(); break;
+            case '^': s << pow(num1, num2); table[row - 1][column - 1] = s.str(); break;
         }
     } 
 }
+
 void Table::calculate(const size_t row, const size_t column, const std::string larg, const char oper, const std::string rarg)
 {
-    size_t largRow = getRow(larg), largColumn = getColumn(larg);
-    size_t rargRow = getRow(rarg), rargColumn = getColumn(rarg);        
+    size_t largRow = get_row(larg), largColumn = get_column(larg);
+    size_t rargRow = get_row(rarg), rargColumn = get_column(rarg);        
 
-    bool cell1 = validCell(largRow, largColumn), cell2 = validCell(rargRow, rargColumn);
+    bool cell1 = valid_cell(largRow, largColumn), cell2 = valid_cell(rargRow, rargColumn);
     if (cell1 && cell2)
     {
-        std::string type1 = check(cells[largRow - 1][largColumn - 1].data);
-        std::string type2 = check(cells[rargRow - 1][rargColumn - 1].data);
+        std::string type1 = check(table[largRow - 1][largColumn - 1]);
+        std::string type2 = check(table[rargRow - 1][rargColumn - 1]);
         if (type1 == "number" && type2 == "number")
         {
-            double num1 = std::stod(cells[largRow - 1][largColumn - 1].data);
-            double num2 = std::stod(cells[rargRow - 1][rargColumn - 1].data);
+            double num1 = std::stod(table[largRow - 1][largColumn - 1]);
+            double num2 = std::stod(table[rargRow - 1][rargColumn - 1]);
 
             std::stringstream s;
             switch (oper)
             {
-                case '+': s << num1 + num2; cells[row - 1][column - 1].data = s.str(); break;
-                case '-': s << num1 - num2; cells[row - 1][column - 1].data = s.str(); break;
-                case '*': s << num1 * num2; cells[row - 1][column - 1].data = s.str(); break;
+                case '+': s << num1 + num2; table[row - 1][column - 1] = s.str(); break;
+                case '-': s << num1 - num2; table[row - 1][column - 1] = s.str(); break;
+                case '*': s << num1 * num2; table[row - 1][column - 1] = s.str(); break;
                 case '/': 
                     if (num2 == 0)
                     {
-                        cells[row - 1][column - 1].data = "ERROR";
+                        table[row - 1][column - 1] = "ERROR";
                     }
                     else
                     { 
                         s << num1 / num2; 
-                        cells[row - 1][column - 1].data = s.str();
+                        table[row - 1][column - 1] = s.str();
                     }                      
                     break;
-                case '^': s << pow(num1, num2); cells[row - 1][column - 1].data = s.str(); break;
+                case '^': s << pow(num1, num2); table[row - 1][column - 1] = s.str(); break;
             }
         }
         else if(type1 == "number" && type2 != "number")
         {
-            double num1 = std::stod(cells[largRow - 1][largColumn - 1].data);
+            double num1 = std::stod(table[largRow - 1][largColumn - 1]);
             double num2 = 0.0;
             double result = 0.0;
         
             std::stringstream s;
             switch (oper)
             {
-                case '+': result = num1 + num2; s << result; cells[row - 1][column - 1].data = s.str(); break;
-                case '-': result = num1 - num2; s << result; cells[row - 1][column - 1].data = s.str(); break;
-                case '*': result = num1 * num2; s << result; cells[row - 1][column - 1].data = s.str(); break;
-                case '/': cells[row - 1][column - 1].data = "ERROR"; break;
-                case '^': s << pow(num1, 0); cells[row - 1][column - 1].data = s.str(); break;
+                case '+': result = num1 + num2; s << result; table[row - 1][column - 1] = s.str(); break;
+                case '-': result = num1 - num2; s << result; table[row - 1][column - 1] = s.str(); break;
+                case '*': result = num1 * num2; s << result; table[row - 1][column - 1] = s.str(); break;
+                case '/': table[row - 1][column - 1] = "ERROR"; break;
+                case '^': s << pow(num1, 0); table[row - 1][column - 1] = s.str(); break;
             }
         }
         else if (type1 != "number" && type2 == "number")
         {
             double num1 = 0.0;
-            double num2 = std::stod(cells[rargRow - 1][rargRow - 1].data);
+            double num2 = std::stod(table[rargRow - 1][rargRow - 1]);
             double result = 0.0;
 
             std::stringstream s;
             switch (oper)
             {
-                case '+': result = num1 + num2; s << result; cells[row - 1][column - 1].data = s.str(); break;
-                case '-': result = num1 - num2; s << result; cells[row - 1][column - 1].data = s.str(); break;
-                case '*': result = num1 * num2; s << result; cells[row - 1][column - 1].data = s.str(); break;
-                case '/': cells[row - 1][column - 1].data = "0"; break;
-                case '^': cells[row - 1][column - 1].data = "0";
+                case '+': result = num1 + num2; s << result; table[row - 1][column - 1] = s.str(); break;
+                case '-': result = num1 - num2; s << result; table[row - 1][column - 1] = s.str(); break;
+                case '*': result = num1 * num2; s << result; table[row - 1][column - 1] = s.str(); break;
+                case '/': table[row - 1][column - 1] = "0"; break;
+                case '^': table[row - 1][column - 1] = "0";
             }
         }
         else //?
         {
-            cells[row - 1][column - 1].data = "0"; //or "Invalid type"
+            table[row - 1][column - 1] = "0"; //or "Invalid type"
         }
     }
     else
     {
-        cells[row - 1][column - 1].data = "0";
+        table[row - 1][column - 1] = "0";
     }
 }
 
-//public funcs
-Table::Table()
+// public funcs
+Table::Table(const size_t& rows, const size_t& columns) : table(rows)
 {
-    cells = nullptr;
-}
-Table::~Table()
-{
-    for (size_t i = 0; i < rows; i++)
-    {
-        delete[]cells[i];
-    }
-    delete[]cells;
+    for (size_t row = 0; row < rows; row++) table[row].resize(columns);
 }
 
-void Table::init(Menu& m)
+void Table::edit(const std::string& expression)
 {
-    if (m.file.is_open())
-    {
-        setRows(m);
-        setColumns(m);   
+    std::string expr = expression;
+    std::string result = expr.substr(0, expr.find('=') - 1);
+    expr.erase(0, result.size() + 3);
 
-        cells = new Cell*[rows];
-        for (size_t i = 0; i < rows; i++)
-        {
-            cells[i] = new Cell[columns];
-        }
-
-        read(m);
-    }
-}
-void Table::edit(std::string expression)
-{
-    std::string result = expression.substr(0, expression.find('=') - 1);
-    expression.erase(0, result.size() + 3);
-
-    std::string operand1, operand2;
+    std::string first_operand, second_operand;
     char oper;
-    if (expression.find(' ') != std::string::npos)
+    if (expr.find(' ') != std::string::npos)
     {
-        operand1 = expression.substr(0, expression.find(' '));
-        expression.erase(0, operand1.size() + 1);
+        first_operand = expr.substr(0, expr.find(' '));
+        expr.erase(0, first_operand.size() + 1);
 
-        oper = expression[0];
-        operand2 = expression.substr(2, expression.size());
+        oper = expr[0];
+        second_operand = expr.substr(2, expr.size());
          
         if (oper != '+' && oper != '-' && oper != '*' && oper != '/' && oper != '^')
         {
@@ -549,36 +351,10 @@ void Table::edit(std::string expression)
             return;
         }
     }
-    else
-    {
-        operand1 = expression.substr(0, expression.size());
-    }
-
+    else first_operand = expr.substr(0, expr.size());
     
-    if (!isCell(result))
-    {
-        std::cout << "Invalid expression!\n";
-        return;
-    }
+    if (!is_cell(result)) { std::cout << "Invalid expression!\n"; return; }
     
-    if (operand2 == "")
-    {
-        execute(result, operand1);
-    }
-    else
-    {
-        execute(result, operand1, oper, operand2);
-    }
-}
-void Table::print()const
-{
-    for (size_t i = 0; i < rows; i++)
-    {
-        for (size_t j = 0; j < columns; j++)
-        {
-            size_t width = setWidth(j);
-            std::cout << cells[i][j].data << std::setw(width - cells[i][j].data.size() + 3) << " | ";
-        }
-        std::cout << std::endl;
-    }
+    if (second_operand == "") execute(result, first_operand);
+    else execute(result, first_operand, oper, second_operand);
 }

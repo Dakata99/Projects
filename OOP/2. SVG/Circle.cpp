@@ -1,39 +1,33 @@
 #include "Circle.h"
 
-Circle::Circle(const double cx, const double cy, const double r, const std::string col)
-    :Figure(cx, cy, col), radius(fabs(r)){}
+Circle::Circle(const double& cx = 0.0, const double& cy = 0.0, const double& r = 0.0, const std::string& col = "")
+                : Figure(cx, cy, col), radius(fabs(r)){}
 
-const std::string Circle::getType()const
-{
-    return "circle";
-}
-const std::string Circle::getInfo()const
+const std::string Circle::get_type(void) const { return "circle"; }
+
+const std::string Circle::get_info(void) const
 {
     std::stringstream s;
-    s << "\t<circle cx=\"" << startX << "\" cy=\"" << startY <<
+
+    s << "\t<circle cx=\"" << start_x << "\" cy=\"" << start_y <<
            "\" r=\"" << radius << "\" fill=\"" + color + "\" />\n";
 
     return s.str();
 }
-double Circle::getStartX()const
+
+double Circle::get_start_x(void) const { return start_x; }
+
+double Circle::get_start_y(void) const { return start_y; }
+
+double Circle::getRadius(void) const { return radius; }
+
+void Circle::print(void)const
 {
-    return startX;
-}
-double Circle::getStartY()const
-{
-    return startY;
-}
-double Circle::getRadius()const
-{
-    return radius;
+    std::cout << "circle " << start_x << " " << start_y << " " << radius << " " << color << std::endl;
 }
 
-void Circle::print()const
+void Circle::translate(const double& x = 0.0, const double& y = 0.0)
 {
-    std::cout << "circle " << startX << " " << startY << " " << radius << " " << color << std::endl;
-}
-void Circle::translate(const double x, const double y)
-{
-    startX += x;
-    startY += y;
+    start_x += x;
+    start_y += y;
 }

@@ -1,52 +1,43 @@
-#pragma once
-#include <string>
+#ifndef _TABLE_H_
+#define _TABLE_H_
 
-struct Cell
-{
-    std::string data;
-    size_t row, column;
-    Cell();
-};
+#include <string>
+#include <vector>
+#include <iostream>
+
+class Menu;
 
 class Table
 {
 private:
     friend Menu;
-    Cell** cells;
+    
+    typedef std::vector<std::string> cells;
+    std::vector<cells> table;
+
     size_t rows, columns;
 
 private:
-    void setRows(Menu& m);
-    void setColumns(Menu& m);
-    size_t setWidth(size_t index)const;
-
-    std::string extractString(std::string, const char);
-    std::string extractString(std::string, std::string, std::string);
-    //std::string removeWhiteSpaces(Menu&);
-    std::string removeWS(const std::string);
+    size_t set_width(const size_t&) const;
    
     void read(Menu&);
 
-    bool isInteger(const std::string)const;
-    bool isDouble(const std::string)const;
-    bool isCell(const std::string)const;
-    bool validCell(const size_t, const size_t)const;
+    //std::string check(std::string) const;
 
-    std::string check(std::string)const;
+    size_t get_row(const std::string) const;
+    size_t get_column(const std::string) const;
 
-    size_t getRow(const std::string)const;
-    size_t getColumn(const std::string)const;
+    bool valid_cell(const size_t&, const size_t&);
 
     void execute(const std::string, const std::string);
     void execute(const std::string, const std::string, const char, const std::string);
     void calculate(const size_t, const size_t, const std::string, const char, const std::string);
 
 public:
-    Table();
-    ~Table();
+    Table(const size_t& = 1, const size_t& = 1);
 
-    void init(Menu&);
-    void edit(std::string);
-    void print()const;
+    //void init(Menu&);
+    void edit(const std::string&);
 };
 
+#endif

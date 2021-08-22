@@ -1,53 +1,43 @@
 #include "Line.h"
 
-Line::Line(const double sX, const double sY, const double eX, const double eY, const double strWidth, const std::string col)
-            :Figure(sX, sY, col), endX(fabs(eX)), endY(fabs(eY)), strokeWidth(fabs(strWidth)){}
+Line::Line(const double& start_x = 0.0, const double& start_y = 0.0, 
+           const double& end_x_ = 0.0, const double& end_y_ = 0.0, const double& str_width = 0.0, 
+           const std::string& col = "")
+            : Figure(start_x, start_y, col), end_x(fabs(end_x_)), end_y(fabs(end_y_)), stroke_width(fabs(str_width)) {}
 
-double Line::getEndX()const
-{
-    return endX;
-}
-double Line::getEndY()const
-{
-    return endY;
-}
-double Line::getStrokeWidth()const
-{
-    return strokeWidth;
-}
+double Line::get_end_x(void) const { return end_x; }
 
-const std::string Line::getType()const
-{
-    return "line";
-}
-const std::string Line::getInfo()const
+double Line::get_end_y(void) const { return end_y; }
+
+double Line::get_stroke_width(void) const { return stroke_width; }
+
+const std::string Line::get_type(void) const { return "line"; }
+
+const std::string Line::get_info(void) const
 {
     std::stringstream s;
-    s << "\t<line x1=\"" <<startX << "\" y1=\"" << startY <<
-            "\" x2=\"" << endX << "\" y2=\"" << endY <<
-            "\" stroke-width=\"" << strokeWidth <<  
+    
+    s << "\t<line x1=\"" << start_x << "\" y1=\"" << start_y <<
+            "\" x2=\"" << end_x << "\" y2=\"" << end_y <<
+            "\" stroke-width=\"" << stroke_width <<  
             "\" stroke=\"" + color + "\" />\n";
 
     return s.str();
 }
-double Line::getStartX()const
+
+double Line::get_start_x(void) const { return start_x; }
+
+double Line::get_start_y(void) const { return start_y; }
+
+void Line::print(void) const
 {
-    return startX;
-}
-double Line::getStartY()const
-{
-    return startY;
+    std::cout << "line " << start_x << " " << start_y << " " << end_x << " " << end_y << " " << stroke_width << " " << color << std::endl;
 }
 
-void Line::print()const
+void Line::translate(const double& x = 0.0, const double& y = 0.0)
 {
-    std::cout << "line " << startX << " " << startY << " " << endX << " " << endY << " " << strokeWidth << " " << color << std::endl;
-}
-void Line::translate(const double x, const double y)
-{
-
-    startX += x;
-    startY += y;
-    endX += x;
-    endY += y;
+    start_x += x;
+    start_y += y;
+    end_x += x;
+    end_y += y;
 }

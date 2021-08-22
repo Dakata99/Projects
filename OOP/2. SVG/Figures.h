@@ -1,5 +1,8 @@
-#pragma once
+#ifndef _FIGURES_H_
+#define _FIGURES_H_
+
 #include <vector>
+
 #include "Figure.h"
 #include "Rectangle.h"
 #include "Circle.h"
@@ -14,12 +17,14 @@ private:
     std::vector<Figure*> figures;
 
 private:
-    void print()const;
-    void within(const Figure*)const;
-    void translate(const size_t, const double, const double);
+    void print(void) const;
+    void within(const Figure*) const;
+    void translate(const size_t&, const double&, const double&);
 
-    bool inside(const Figure*&, const Figure*)const;
-    Figure* createRectangle(const std::string&, const std::string&, const std::string&, const std::string&, const std::string&);
-    Figure* createCircle(const std::string&, const std::string&, const std::string&, const std::string&);
-    Figure* createLine(const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&);
+    bool inside(const Figure*&, const Figure*) const;
+    Figure* create_rectangle(const std::string&, const std::string&, const std::string&, const std::string&, const std::string&);
+    Figure* create_circle(const std::string&, const std::string&, const std::string&, const std::string&);
+    Figure* create_line(const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&);
 };
+
+#endif

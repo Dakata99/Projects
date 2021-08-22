@@ -1,6 +1,0 @@
-<svg>
-	<rect x="5" y="5" width="10" height="10" fill="green " />
-	<circle cx="5" cy="5" r="10" fill="blue " />
-	<rect x="60" y="60" width="10" height="10" fill="red " />
-	<circle cx="30" cy="30" r="20" fill="brown" />
-</svg>

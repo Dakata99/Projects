@@ -4,6 +4,8 @@
 #include <stack>
 #include <string>
 #include <sstream>
+
+#include "../../../c++/library/Strlib.cpp"
 #include "Extract.cpp"
 #include "Reverse.cpp"
 #include "Convert.cpp"
@@ -11,7 +13,7 @@
 #include "Examination.cpp"
 #include "Tags.cpp"
 
-void run()
+void run(void)
 {
     std::ifstream input;
     std::string inputFile, outputFile;
@@ -37,7 +39,7 @@ void run()
     std::getline(input, line);
 
     //openTags + closeTags = tags
-    std::stack<std::string> tags = getTags(line);
+    std::stack<std::string> tags = get_tags(line);
     std::stack<std::string> openTags;
     std::stack<std::string> closeTags;
     std::stack<std::string> data;
@@ -66,16 +68,16 @@ void run()
 
     //For SRT-SLC to check the argument if its in the range or the vector
     
-    openTags = reverseTags(openTags);
+    openTags = reverse_tags(openTags);
 
     std::string result;
     while (!openTags.empty())
     {
         std::string function = openTags.top();
-        std::string data = extractData(line, openTags.top(), closeTags.top());
+        std::string data = extract_data(line, openTags.top(), closeTags.top());
         std::string tobeReplaced = openTags.top() + data + closeTags.top();
         
-        std::vector<double> realData = convertData(data);
+        std::vector<double> realData = convert_data(data);
         execute(function, realData, data);
         
         line.replace(line.find(tobeReplaced), tobeReplaced.size(), " " + data);
@@ -96,7 +98,7 @@ void run()
     input.close();
 }
 
-int main()
+int main(void)
 {
     run();
 

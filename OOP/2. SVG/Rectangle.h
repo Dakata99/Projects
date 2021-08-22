@@ -1,24 +1,33 @@
-#pragma once
+#ifndef _RECTANGLE_H_
+#define _RECTANGLE_H_
+
+#include <iostream>
+#include <sstream>
+#include <cmath>
+
 #include "Figure.h"
 
-class Rectangle:public Figure
+class Rectangle : public Figure
 {
 private:
     double width, height;
+
 public:
-    Rectangle(const double = 0.0, const double = 0.0, const double = 0.0, const double = 0.0, const std::string = "");
+    Rectangle(const double&, const double&, const double&, const double&, const std::string&);
     
-    const std::string getType()const override;
+    const std::string get_type(void) const override;
 
-    double getStartX()const override;
-    double getStartY()const override;
+    double get_start_x(void) const override;
+    double get_start_y(void) const override;
     
-    double getEndX()const;
-    double getEndY()const;
-    double getWidth()const;
-    double getHeight()const;
+    double get_end_x(void) const;
+    double get_end_y(void) const;
+    double get_width(void) const;
+    double get_height(void) const;
 
-    const std::string getInfo()const override;
-    void print()const override;
-    void translate(const double, const double) override;
+    const std::string get_info(void) const override;
+    void print(void) const override;
+    void translate(const double&, const double&) override;
 };
+
+#endif

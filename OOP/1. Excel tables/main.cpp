@@ -1,92 +1,54 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include "Menu.cpp"
-#include "Table.cpp"
 
-// std::string removeWS(std::string source)
-// {
-//     std::string temp;
-//     for (size_t i = 0; i < source.size(); i++)
-//     {
-//         if (source[i] != ' ')
-//         {
-//             temp += source[i];
-//         }   
-//     }
-//     return temp;
-// }
+//#include "Menu.h"
+//#include "Table.h"
+#include "Tools.h"
 
-// std::string extractString(std::string source, const char end)
-// {
-//     size_t startIndex = source.find(end);
-//     if (startIndex == std::string::npos)
-//     {
-//         return source;
-//     }
-    
-//     return source.substr(0, source.find(end));
-// }
-// // std::string extractString(std::string source, std::string start, std::string end)
-// // {
-// //     size_t startIndex = source.find(start);
-// //     if (startIndex == std::string::npos)
-// //     {
-// //         return "";
-// //     }
-// //     startIndex += start.length();
-
-// //     size_t endIndex = source.find(end, startIndex);
-
-// //     return source.substr(startIndex, endIndex - startIndex);
-// // }
-
-void run()
+void run(void)
 {
-    Menu m;
-    m.printMenu();
-    Table t;
+    Menu menu;
+    menu.print_menu();
+    Table table;
 
     std::string operation;
-    bool printable = false, editable = false;
     do
     {
         std::cout << "> ";
         std::getline(std::cin, operation);
 
-        //if operation has an arument like open then we seperate it in 2 strings, otherwise it doesnt have
+        /* if operation has an argument like open then we seperate it in 2 strings, otherwise it does not have */
         std::string command = operation, argument; 
         if (operation.find(' ') != std::string::npos)
         {
             command = operation.substr(0, operation.find(' '));
             argument = operation.substr(operation.find(' ') + 1, operation.size());
         }
-        
-        if (m.execute(command, argument))
-        {
-            t.init(m); //file is opened and then we initialize the table
-            printable = editable = true; //and table can be printed and edited
-        }
-        else if (command == "close")
-        {
-            printable = editable = false;
-        }
-        
-        if (command == "print" && printable)
-        {
-            t.print();
-        }
-        else if (command == "edit" && editable)
-        {
-            t.edit(argument);
-        }
 
+        menu.execute(command, argument, table);
     } while (operation != "exit");
 }
 
-int main()
+int main(void)
 {
-    run();
+    //run();
+    //separate();
+    //std::cout << std::boolalpha << is_string("\"hellow world!\"") << std::endl
+                                //<< is_string("nsofjng\"asdfpgksdf\"dmfogkmdg") << std::endl
+                                //<< is_string("") << std::endl;
+    //separate_with_automata();
+
+    std::filebuf fb;
+    fb.open("example", std::ios::in);
+    std::istream f(&fb);
+    std::vector<std::string> data = getNextLineAndSplitIntoTokens(f);
+
+    for (size_t i = 0; i < data.size(); i++)
+    {
+        std::cout << data[i] << std::endl;
+    }
+    
 
     return 0;
 }
